@@ -1,34 +1,38 @@
-- name: Notificar a Teams
-  uses: jdcargile/ms-teams-notification@v1  # <--- SOLUCIÓN
-  with:
-  
+name: Notificación a Teams al Fusionar PR
+
 on:
   pull_request:
+    # Se activa solo cuando el PR es cerrado (lo que incluye la fusión)
     types: [closed]
 
 jobs:
   notify_teams:
-    # Solo se ejecuta si el Pull Request ha sido fusionado (merged)
+    # ----------------------------------------------------------------------
+    # Corrección Clave: Solo se ejecuta si el Pull Request ha sido fusionado.
+    # ----------------------------------------------------------------------
     if: github.event.pull_request.merged == true
+    
     runs-on: ubuntu-latest
     
     steps:
       - name: Enviar notificación a Teams
-        # Utilizamos una Acción del Marketplace que sabe cómo enviar mensajes a Teams
-        uses: jdcargile/ms-teams-notification@v1.5 
+        # ----------------------------------------------------------------------
+        # SOLUCIÓN CRÍTICA DE VERSIÓN: Usamos @v1 para evitar el error de "v1.5"
+        # ----------------------------------------------------------------------
+        uses: jdcargile/ms-teams-notification@v1 
         with:
-          # Usamos el Secreto que creaste con la URL del Webhook
-          ms-teams-webhook-uri: ${{ secrets.MSTEAMS_WEBHOOK_URL }}
+          # Usamos el Secreto que usted especificó.
+          webhook_url: ${{ secrets.MSTEAMS_WEBHOOK_URL }}
           
           # Este es el título que aparecerá en la notificación de Teams
-          notification-summary: ✅ ¡Código Fusionado en ${{ github.repository }}!
+          message_title: '✅ ¡PR Fusionado en ${{ github.repository }}!'
           
           # Puedes personalizar el color (verde para éxito)
-          notification-color: '28A745'
+          notification_color: '28A745'
           
           # Cuerpo del mensaje (Markdown es aceptado)
-          notification-message: |
-            Se ha fusionado un nuevo cambio: *${{ github.event.pull_request.title }}*
-            * *Autor:* @${{ github.event.pull_request.user.login }}
-            * *Rama Target:* ${{ github.event.pull_request.base.ref }}
-            [Ver Pull Request](${{ github.event.pull_request.html_url }})
+          notification_message: |
+            Se ha fusionado un nuevo cambio: **${{ github.event.pull_request.title }}**
+            * **Autor:** @${{ github.event.pull_request.user.login }}
+            * **Rama Target:** ${{ github.event.pull_request.base.ref }}
+            [Ver Pull Request](${{ github.event.pull_request.html_url }})
