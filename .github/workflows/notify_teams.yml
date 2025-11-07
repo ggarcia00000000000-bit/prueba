@@ -1,38 +1,13 @@
-name: Notificación a Teams al Fusionar PR
-
-on:
-  pull_request:
-    # Se activa solo cuando el PR es cerrado (lo que incluye la fusión)
-    types: [closed]
-
-jobs:
-  notify_teams:
-    # ----------------------------------------------------------------------
-    # Corrección Clave: Solo se ejecuta si el Pull Request ha sido fusionado.
-    # ----------------------------------------------------------------------
-    if: github.event.pull_request.merged == true
-    
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Enviar notificación a Teams
-        # ----------------------------------------------------------------------
-        # SOLUCIÓN CRÍTICA DE VERSIÓN: Usamos @v1 para evitar el error de "v1.5"
-        # ----------------------------------------------------------------------
+- name: Enviar notificación a Teams
         uses: jdcargile/ms-teams-notification@v1 
         with:
-          # Usamos el Secreto que usted especificó.
-          webhook_url: ${{ secrets.MSTEAMS_WEBHOOK_URL }}
-          
-          # Este es el título que aparecerá en la notificación de Teams
-          message_title: '✅ ¡PR Fusionado en ${{ github.repository }}!'
-          
-          # Puedes personalizar el color (verde para éxito)
+          # ----------------- ¡VARIABLES CORREGIDAS! -----------------
+          webhook_uri: ${{ secrets.MSTEAMS_WEBHOOK_URL }} # <--- CORREGIDO: ahora es 'webhook_uri'
+          notification_summary: '✅ PR Fusionado en ${{ github.repository }}'
           notification_color: '28A745'
-          
-          # Cuerpo del mensaje (Markdown es aceptado)
           notification_message: |
             Se ha fusionado un nuevo cambio: **${{ github.event.pull_request.title }}**
             * **Autor:** @${{ github.event.pull_request.user.login }}
             * **Rama Target:** ${{ github.event.pull_request.base.ref }}
             [Ver Pull Request](${{ github.event.pull_request.html_url }})
+          # -----------------------------------------------------------
