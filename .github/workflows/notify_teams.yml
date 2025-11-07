@@ -1,5 +1,7 @@
-name: Notificar a Teams sobre PR Fusionado
-
+- name: Notificar a Teams
+  uses: jdcargile/ms-teams-notification@v1  # <--- SOLUCIÓN
+  with:
+  
 on:
   pull_request:
     types: [closed]
